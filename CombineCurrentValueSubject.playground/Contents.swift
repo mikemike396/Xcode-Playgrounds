@@ -1,18 +1,28 @@
 import Combine
 
-struct Model {
+struct ModelStruct {
     let labelText = CurrentValueSubject<String, Never>("")
     func fetchData(result: Bool) {
         labelText.send(result ? "Success" : "Failure")
     }
 }
 
-let model = Model()
-model.labelText.sink { value in
+class ModelClass {
+    @Published var test = ""
+}
+
+let modelStruct = ModelStruct()
+modelStruct.labelText.sink { value in
+    print(value)
+}
+let modelClass = ModelClass()
+modelClass.$test.sink { value in
     print(value)
 }
 
-model.labelText.send("Testing using send")
-model.labelText.value = "Testing updating value"
-model.fetchData(result: true)
-model.fetchData(result: false)
+modelStruct.labelText.send("Testing using send")
+modelStruct.labelText.value = "Testing updating value"
+modelStruct.fetchData(result: true)
+modelStruct.fetchData(result: false)
+
+modelClass.test = "Test"
