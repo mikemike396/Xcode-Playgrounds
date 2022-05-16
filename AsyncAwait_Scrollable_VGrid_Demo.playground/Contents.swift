@@ -28,12 +28,12 @@ class ViewModel: ObservableObject {
 }
 
 struct ContentView: View {
-    @ObservedObject var viewModel = ViewModel()
+    @StateObject var viewModel = ViewModel()
     
     var body: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
-                ForEach(viewModel.images.shuffled().prefix(20), id: \.self) { image in
+                ForEach(viewModel.images.shuffled().prefix(50), id: \.self) { image in
                     AsyncImage(
                         url: image.url,
                         content: { image in
@@ -56,6 +56,5 @@ struct ContentView: View {
 
 
 let view = ContentView()
-let viewModel = ViewModel()
 let hostingVC = UIHostingController(rootView: view)
 PlaygroundPage.current.liveView = hostingVC
