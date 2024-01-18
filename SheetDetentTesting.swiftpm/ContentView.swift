@@ -16,21 +16,27 @@ struct ContentView: View {
         }
     }
 
-    private var scrollView: some View {
-        VStack {
-            Button("Collapse") {
-                detent = .medium
-            }
-            ScrollView {
-                VStack {
-                    ForEach(0..<100) { index in
-                        Text(String(index))
-                            .frame(maxWidth: .infinity)
+    @ViewBuilder private var scrollView: some View {
+        if #available(iOS 17.0, *) {
+            VStack {
+                Button("Collapse") {
+                    detent = .medium
+                }
+                ScrollView {
+                    VStack {
+                        ForEach(0..<100) { index in
+                            Text(String(index))
+                                .frame(maxWidth: .infinity)
+                        }
                     }
+                    .background(Color.blue)
                 }
             }
+            // FIX for ScrollView collapsing before sheet animation finishes
+            //.scrollClipDisabled(true)
+            .padding(.top)
+        } else {
+            // Fallback on earlier versions
         }
-        .padding(.top)
-        .background(Color.blue)
     }
 }
