@@ -9,18 +9,20 @@ import SwiftUI
 
 struct ContentView : View {
     @Environment(\.theme) var theme: Theme
-    @Environment(\.setTheme) var setTheme: SetTheme
+    // @Environment(\.setTheme) var setTheme: SetTheme
     
     @State var showSheet = false
     
     var body: some View {
         VStack {
             Button("Toggle Dark") {
-                setTheme(value: .dark)
+                // setTheme(value: .dark)
+                theme.updateStyle(.dark)
             }
             
             Button("Toggle Light") {
-                setTheme(value: .light)
+                // setTheme(value: .light)
+                theme.updateStyle(.light)
             }
             
             Button("Show Sheet") {

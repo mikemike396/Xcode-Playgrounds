@@ -33,6 +33,8 @@ struct Theme {
     
     var style: Style
     
+    var updateStyle: (Style) -> Void
+    
     var background: Color {
         style.background
     }
@@ -40,15 +42,11 @@ struct Theme {
     var text: Color {
         style.text
     }
-    
-    init(style: Theme.Style) {
-        self.style = style
-    }
 }
 
 extension EnvironmentValues {
     enum ThemeKey: EnvironmentKey {
-        static let defaultValue: Theme = .init(style: .light)
+        static let defaultValue: Theme = .init(style: .light, updateStyle: { _ in })
     }
 
     var theme: Theme {

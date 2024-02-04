@@ -9,18 +9,17 @@ import SwiftUI
 
 struct Sheet: View {
     @Environment(\.theme) var theme
-    @Environment(\.setTheme) var setTheme: SetTheme
     
     var body: some View {
         VStack {
             Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
             
             Button("Toggle Dark") {
-                setTheme(value: .dark)
+                theme.updateStyle(.dark)
             }
             
             Button("Toggle Light") {
-                setTheme(value: .light)
+                theme.updateStyle(.light)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

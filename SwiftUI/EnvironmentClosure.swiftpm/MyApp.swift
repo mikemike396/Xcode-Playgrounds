@@ -9,13 +9,17 @@ import SwiftUI
 
 @main
 struct MyApp: App {
-    @State private var theme = Theme(style: .light)
-
+    @State private var currentStyle = Theme.Style.light
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.theme, theme)
-                .environment(\.setTheme, .init { theme.style = $0 })
+                .environment(\.theme, .init(
+                    style: currentStyle,
+                    updateStyle: { currentStyle = $0 }
+                ))
+                /// Demonstrates `callAsFunction`
+                //.environment(\.setTheme, .init { currentStyle = $0 })
         }
     }
 }
