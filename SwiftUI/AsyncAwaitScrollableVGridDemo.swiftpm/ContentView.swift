@@ -1,7 +1,4 @@
-import Foundation
-import _Concurrency
 import SwiftUI
-import PlaygroundSupport
 
 struct Model: Decodable, Hashable {
     let url: URL
@@ -10,7 +7,8 @@ struct Model: Decodable, Hashable {
 class ViewModel: ObservableObject {
     let apiURL = "https://jsonplaceholder.typicode.com/photos"
     @Published var images: [Model] = []
-    
+
+    @MainActor
     func loadData() async {
         do {
             guard let url = URL(string: apiURL) else { return }
@@ -19,7 +17,7 @@ class ViewModel: ObservableObject {
             // Handle Error
         }
     }
-    
+
     func getImageUrls(from url: URL) async throws -> [Model] {
         let (data, response) = try await URLSession.shared.data(from: url)
         let results = try JSONDecoder().decode([Model].self, from: data)
@@ -29,11 +27,11 @@ class ViewModel: ObservableObject {
 
 struct ContentView: View {
     @StateObject var viewModel = ViewModel()
-    
+
     var body: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
-                ForEach(viewModel.images.shuffled().prefix(50), id: \.self) { image in
+                ForEach(viewModel.images.shuffled().prefix(5000), id: \.self) { image in
                     AsyncImage(
                         url: image.url,
                         content: { image in
@@ -53,8 +51,3 @@ struct ContentView: View {
         }
     }
 }
-
-
-let view = ContentView()
-let hostingVC = UIHostingController(rootView: view)
-PlaygroundPage.current.liveView = hostingVC
