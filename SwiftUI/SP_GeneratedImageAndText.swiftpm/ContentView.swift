@@ -2,7 +2,10 @@ import SwiftUI
 
 struct ContentView: View {
     @State var isExpanded: Bool = true
-    
+    @State var generatedImageURL = URL(string: "https://picsum.photos/1000")
+    @State var suggestedTextSelected = false
+    @State var suggestedImageSelected = false
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -63,9 +66,9 @@ struct ContentView: View {
     }
     
     private var messageView: some View {
-        Text("What's on your mind?")
+        Text("Feedback is important to us. Let us know your thoughts.")
             .font(.title)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(.primary)
     }
     
     private var actionButtonsView: some View {
@@ -78,7 +81,7 @@ struct ContentView: View {
     }
     
     private var suggestionsView: some View {
-        VStack {
+        VStack(spacing: 10) {
             Button {
                 withAnimation {
                     isExpanded.toggle()
@@ -86,8 +89,7 @@ struct ContentView: View {
             } label: {
                 HStack {
                     Text("Suggestions")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
+                        .font(.headline)
                     Spacer()
                     Image(systemName: "chevron.down")
                         .rotationEffect(.degrees(isExpanded ? 0 : 180))
@@ -98,18 +100,87 @@ struct ContentView: View {
             .buttonStyle(.plain)
             
             if isExpanded {
-                AsyncImage(
-                    url: URL(string: "https://picsum.photos/1000"),
-                    transaction: .init(animation: .default)
-                ) { image in
-                    image
-                        .image?.resizable()
-                        .frame(height: 200)
-                        .aspectRatio(contentMode: .fill)
-                        .clipShape(.rect(cornerRadius: 15.0))
-                        .transition(.opacity)
+                VStack {
+                    generatedText
+                    generatedImage
                 }
             }
         }
+    }
+
+    private var generatedText: some View {
+        Text("🌟 Calling all app users! Your feedback shapes the future of our app! Keep those brilliant feature suggestions coming and upvote the ones you love. Let's create something amazing together! 🚀💡 https://smartpostapp.featureos.app/ #AppFeedback #UserEngagement #InnovateTogether")
+            .font(.system(size: 20))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(15)
+            .background {
+                Color(.secondaryLabel.withAlphaComponent(0.05))
+                    .cornerRadius(15.0)
+            }
+            .overlay {
+                regenerateButton {
+                    generatedImageURL = URL(string: "https://picsum.photos/1000?v=\(Int.random(in: 0...1000))")
+                }
+            }
+            .overlay(alignment: .topTrailing) {
+                selectButton(selected: $suggestedTextSelected)
+            }
+    }
+
+    private var generatedImage: some View {
+        AsyncImage(
+            url: generatedImageURL,
+            transaction: .init(animation: .default)
+        ) { image in
+            image
+                .image?.resizable()
+                .frame(height: 200)
+                .aspectRatio(contentMode: .fill)
+                .clipShape(.rect(cornerRadius: 15.0))
+                .transition(.opacity)
+                .overlay {
+                    regenerateButton {
+                        generatedImageURL = URL(string: "https://picsum.photos/1000?v=\(Int.random(in: 0...1000))")
+                    }
+                }
+                .overlay(alignment: .topTrailing) {
+                    selectButton(selected: $suggestedImageSelected)
+                }
+        }
+    }
+
+    @ViewBuilder
+    private func regenerateButton(action: @escaping () -> Void) -> some View {
+        Button {
+            action()
+        } label: {
+            Image(systemName: "arrow.clockwise")
+                .font(.title2)
+                .fontWeight(.semibold)
+                .foregroundStyle(.white.opacity(0.85))
+                .padding(10)
+                .background {
+                    Color(.secondaryLabel.withAlphaComponent(0.6))
+                        .clipShape(.circle)
+                }
+        }
+    }
+
+    @ViewBuilder
+    private func selectButton(selected: Binding<Bool>) -> some View {
+        Button {
+            selected.wrappedValue.toggle()
+        } label: {
+            Image(systemName: selected.wrappedValue ? "checkmark.square" : "square")
+                .font(.title3)
+                .fontWeight(.semibold)
+                .foregroundStyle(selected.wrappedValue ? .green : .white.opacity(0.85))
+                .padding(5)
+                .background {
+                    Color(.secondaryLabel.withAlphaComponent(0.2))
+                        .clipShape(.rect(cornerRadius: 8.0))
+                }
+        }
+        .padding(10)
     }
 }
