@@ -1,11 +1,16 @@
 import SwiftUI
 
+enum SelectType {
+    case image
+    case text
+}
 struct ContentView: View {
-    @State var isExpanded: Bool = true
-    @State var generatedImageURL = URL(string: "https://picsum.photos/1000")
-    @State var suggestedTextSelected = false
-    @State var suggestedImageSelected = false
-
+    let generatedMessage = "🌟 Calling all app users! Your feedback shapes the future of our app! Keep those brilliant feature suggestions coming and upvote the ones you love. Let's create something amazing together! 🚀💡 https://smartpostapp.featureos.app/ #AppFeedback #UserEngagement #InnovateTogether"
+    @State var isExpanded: Bool = false
+    @State var generatedImageURL = URL(string: "https://picsum.photos/1000?v=\(Int.random(in: 0...1000))")
+    @State var message: String = ""
+    @State var images: [URL] = []
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -19,14 +24,15 @@ struct ContentView: View {
                 ScrollView {
                     VStack(alignment: .leading) {
                         messageView
-                            .padding(.top, 15)
-                            .padding(.bottom, 30)
+                            .padding(.top, 10)
                         Divider()
                             .frame(width: 225)
                         actionButtonsView
                             .padding(.top, 10)
+                        imageGalleryView
                         suggestionsView
                             .padding(.top, 10)
+                    
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 20)
@@ -66,9 +72,14 @@ struct ContentView: View {
     }
     
     private var messageView: some View {
-        Text("Feedback is important to us. Let us know your thoughts.")
+        TextField("What's on your mind?", text: $message, axis: .vertical)
             .font(.title)
             .foregroundStyle(.primary)
+            .frame(minHeight: 75, alignment: .top)
+            .onSubmit {
+                isExpanded = true
+            }
+            .padding(.top, 10)
     }
     
     private var actionButtonsView: some View {
@@ -77,6 +88,29 @@ struct ContentView: View {
                 .font(.footnote)
             Button("AI Assistant", systemImage: "wand.and.sparkles") {}
                 .font(.footnote)
+        }
+    }
+    
+    private var imageGalleryView: some View {
+        ForEach(images, id: \.absoluteString) { url in
+            AsyncImage(
+                url: url,
+                transaction: .init(animation: .default)
+            ) { image in
+                image
+                    .image?.resizable()
+                    .frame(height: 200)
+                    .aspectRatio(contentMode: .fill)
+                    .clipShape(.rect(cornerRadius: 15.0))
+                    .transition(.opacity)
+                    .overlay(alignment: .topTrailing) {
+                        removeButton {
+                            withAnimation {
+                                images.removeAll { $0 == url }
+                            }
+                        }
+                    }
+            }
         }
     }
     
@@ -91,7 +125,7 @@ struct ContentView: View {
                     Text("Suggestions")
                         .font(.headline)
                     Spacer()
-                    Image(systemName: "chevron.down")
+                    Image(systemName: "chevron.up")
                         .rotationEffect(.degrees(isExpanded ? 0 : 180))
                         .animation(.default, value: isExpanded)
                 }
@@ -109,7 +143,7 @@ struct ContentView: View {
     }
 
     private var generatedText: some View {
-        Text("🌟 Calling all app users! Your feedback shapes the future of our app! Keep those brilliant feature suggestions coming and upvote the ones you love. Let's create something amazing together! 🚀💡 https://smartpostapp.featureos.app/ #AppFeedback #UserEngagement #InnovateTogether")
+        Text(generatedMessage)
             .font(.system(size: 20))
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(15)
@@ -123,7 +157,9 @@ struct ContentView: View {
                 }
             }
             .overlay(alignment: .topTrailing) {
-                selectButton(selected: $suggestedTextSelected)
+                selectButton {
+                    message = generatedMessage
+                }
             }
     }
 
@@ -144,7 +180,11 @@ struct ContentView: View {
                     }
                 }
                 .overlay(alignment: .topTrailing) {
-                    selectButton(selected: $suggestedImageSelected)
+                    selectButton {
+                        if let generatedImageURL {
+                            images.append(generatedImageURL)
+                        }
+                    }
                 }
         }
     }
@@ -155,10 +195,10 @@ struct ContentView: View {
             action()
         } label: {
             Image(systemName: "arrow.clockwise")
-                .font(.title2)
-                .fontWeight(.semibold)
+                .font(.title3)
+                .fontWeight(.regular)
                 .foregroundStyle(.white.opacity(0.85))
-                .padding(10)
+                .padding(8)
                 .background {
                     Color(.secondaryLabel.withAlphaComponent(0.6))
                         .clipShape(.circle)
@@ -167,18 +207,36 @@ struct ContentView: View {
     }
 
     @ViewBuilder
-    private func selectButton(selected: Binding<Bool>) -> some View {
+    private func selectButton(action: @escaping () -> Void) -> some View {
         Button {
-            selected.wrappedValue.toggle()
+            action()
         } label: {
-            Image(systemName: selected.wrappedValue ? "checkmark.square" : "square")
+            Image(systemName: "arrow.up.square")
                 .font(.title3)
-                .fontWeight(.semibold)
-                .foregroundStyle(selected.wrappedValue ? .green : .white.opacity(0.85))
+                .fontWeight(.regular)
+                .foregroundStyle(.white.opacity(0.85))
                 .padding(5)
                 .background {
-                    Color(.secondaryLabel.withAlphaComponent(0.2))
+                    Color(.secondaryLabel.withAlphaComponent(0.6))
                         .clipShape(.rect(cornerRadius: 8.0))
+                }
+        }
+        .padding(10)
+    }
+    
+    @ViewBuilder
+    private func removeButton(action: @escaping () -> Void) -> some View {
+        Button {
+            action()
+        } label: {
+            Image(systemName: "xmark")
+                .font(.callout)
+                .fontWeight(.semibold)
+                .foregroundStyle(.white.opacity(0.85))
+                .padding(8)
+                .background {
+                    Color(.secondaryLabel.withAlphaComponent(0.6))
+                        .clipShape(.circle)
                 }
         }
         .padding(10)
