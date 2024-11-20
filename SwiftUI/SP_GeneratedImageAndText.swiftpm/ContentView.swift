@@ -5,9 +5,11 @@ enum SelectType {
     case text
 }
 struct ContentView: View {
-    let generatedMessage = "🌟 Calling all app users! Your feedback shapes the future of our app! Keep those brilliant feature suggestions coming and upvote the ones you love. Let's create something amazing together! 🚀💡 https://smartpostapp.featureos.app/ #AppFeedback #UserEngagement #InnovateTogether"
+    let generatedMessages = ["🌟 Calling all app users! Your feedback shapes the future of our app! Keep those brilliant feature suggestions coming and upvote the ones you love. Let's create something amazing together! 🚀💡 https://smartpostapp.featureos.app/ #AppFeedback #UserEngagement #InnovateTogether", "This is an automated schedule post via Smart Post App. Interested in scheduling your posts? #AutomatedPosts #SocialMediaScheduler #BoostProductivity #TimeSaver #SocialMediaManagement https://app.smartpostapp.com/install", "📢 Exciting news! You can now schedule YouTube Shorts directly through the Smart Post app! 🎥✨ Dive into our blog to learn more about this powerful integration and how it can elevate your content strategy. Check it out here: https://medium.com/@smartpostapp/smart-post-app-integrates-with-youtube-ca6fb1d76e6c #YouTubeShorts"]
+    let generatedImages = ["https://picsum.photos/id/100/1000?v=\(Int.random(in: 0...1000))", "https://picsum.photos/id/200/1000?v=\(Int.random(in: 0...1000))", "https://picsum.photos/id/300/1000?v=\(Int.random(in: 0...1000))"]
+    @State var generatedMessage = ""
     @State var isExpanded: Bool = false
-    @State var generatedImageURL = URL(string: "https://picsum.photos/1000?v=\(Int.random(in: 0...1000))")
+    @State var generatedImageURL = URL(string: "")
     @State var message: String = ""
     @State var images: [URL] = []
     
@@ -52,6 +54,10 @@ struct ContentView: View {
                         .foregroundStyle(.black)
                 }
             }
+            .onAppear {
+                generatedMessage = generatedMessages.randomElement() ?? ""
+                generatedImageURL = URL(string: generatedImages.randomElement() ?? "")
+            }
         }
     }
     
@@ -86,8 +92,10 @@ struct ContentView: View {
         HStack(spacing: 20) {
             Button("Add Media", systemImage: "plus") {}
                 .font(.footnote)
+                .foregroundStyle(Color(red: 79.0/255.0, green: 118.0/255.0, blue: 246.0/255.0))
             Button("AI Assistant", systemImage: "wand.and.sparkles") {}
                 .font(.footnote)
+                .foregroundStyle(Color(red: 79.0/255.0, green: 118.0/255.0, blue: 246.0/255.0))
         }
     }
     
@@ -153,7 +161,7 @@ struct ContentView: View {
             }
             .overlay {
                 regenerateButton {
-                    generatedImageURL = URL(string: "https://picsum.photos/1000?v=\(Int.random(in: 0...1000))")
+                    generatedMessage = generatedMessages.randomElement() ?? ""
                 }
             }
             .overlay(alignment: .topTrailing) {
@@ -176,7 +184,7 @@ struct ContentView: View {
                 .transition(.opacity)
                 .overlay {
                     regenerateButton {
-                        generatedImageURL = URL(string: "https://picsum.photos/1000?v=\(Int.random(in: 0...1000))")
+                        generatedImageURL = URL(string: generatedImages.randomElement() ?? "")
                     }
                 }
                 .overlay(alignment: .topTrailing) {
@@ -211,13 +219,13 @@ struct ContentView: View {
         Button {
             action()
         } label: {
-            Image(systemName: "arrow.up.square")
-                .font(.title3)
-                .fontWeight(.regular)
-                .foregroundStyle(.white.opacity(0.85))
+            Image(systemName: "arrow.up.circle")
+                .font(.system(size: 21.0))
+                .fontWeight(.bold)
+                .foregroundStyle(Color(red: 79.0/255.0, green: 118.0/255.0, blue: 246.0/255.0))
                 .padding(5)
                 .background {
-                    Color(.secondaryLabel.withAlphaComponent(0.6))
+                    Color(.white.withAlphaComponent(0.85))
                         .clipShape(.rect(cornerRadius: 8.0))
                 }
         }
