@@ -100,12 +100,13 @@ struct TabbarItem: View {
                 .font(.subheadline)
                 .padding(.horizontal)
                 .padding(.vertical, 6)
-                .foregroundColor(.white)
-                .background {
-                    Capsule()
-                        .foregroundColor(.blue)
+                .foregroundColor(.black)
+                .overlay(alignment: .bottom) {
+                    Color.blue
+                        .frame(height: 3)
+                        .padding(.horizontal, 14)
+                        .matchedGeometryEffect(id: "highlightmenuitem", in: namespace)
                 }
-                .matchedGeometryEffect(id: "highlightmenuitem", in: namespace)
         } else {
             Text(name)
                 .font(.subheadline)
