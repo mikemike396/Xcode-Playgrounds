@@ -55,7 +55,10 @@ struct ContentView: View {
                 selectedIndex: $selectedIndex,
                 selectedTabViewScrollPercentage: selectedTabViewScrollPercentage
             )
-            .padding(.horizontal)
+            .padding(.vertical)
+            .background(Color(.systemGray6))
+            .cornerRadius(25)
+            .padding([.horizontal], 20)
         }
     }
 }
@@ -84,6 +87,8 @@ struct TabBarView: View {
                             }
                         }
                         .frame(height: 45)
+                        .padding(.leading, index == 0 ? 16 : 0)
+                        .padding(.trailing, index == tabBarItems.count - 1 ? 16 : 0)
                     }
                 }
             }
@@ -92,9 +97,6 @@ struct TabBarView: View {
                     reader.scrollTo(index, anchor: .center)
                 }
             }
-            .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(25)
         }
     }
 }
@@ -112,13 +114,13 @@ struct TabBarItem: View {
             if isActive {
                 Text(name)
                     .font(.subheadline)
-                    .padding(.horizontal)
+                    .padding(.horizontal, 20)
                     .padding(.vertical, 6)
                     .foregroundColor(.black)
                     .overlay(alignment: .bottom) {
                         Color.blue
                             .frame(height: 4)
-                            .padding(.horizontal, 14)
+                            .padding(.horizontal, 16)
                             .offset(x: selectedTabViewScrollPercentage * itemWidth)
                             .alignmentGuide(.bottom) { d in
                                 d[.bottom] - 6
@@ -129,7 +131,7 @@ struct TabBarItem: View {
             } else {
                 Text(name)
                     .font(.subheadline)
-                    .padding(.horizontal)
+                    .padding(.horizontal, 20)
                     .padding(.vertical, 6)
                     .foregroundColor(.black)
             }
