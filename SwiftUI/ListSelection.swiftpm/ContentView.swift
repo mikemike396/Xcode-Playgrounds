@@ -4,12 +4,15 @@ struct ContentView: View {
     @State private var selected: Int?
 
     var body: some View {
-        List(1...10, id: \.self, selection: $selected) { item in
+        List(1...10, id: \.self) { item in
             Text(String(item))
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
                 .foregroundStyle(.white)
                 .tag(item)
                 .listRowBackground(selected == item ? Color.gray.opacity(0.4) : Color.gray)
                 .onTapGesture {
+                    selected = item
                     // Action
                 }
         }
